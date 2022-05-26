@@ -8,19 +8,10 @@ import kotlin.random.Random
 
 class MainViewModel(savedStateHandle:SavedStateHandle):ViewModel() {
 
-    private val _squares = MutableLiveData<Squares>()
+    // Вытягиваем значения из бандла,по ключу,а если не получилось то инициализируем случайными значениями
+    // Вот так легко сохраняется состояние вью модели без вмешательства в мэйн активти и saveInstanceState
+    private val _squares = savedStateHandle.getLiveData("squares",createSquare())
     val squares:LiveData<Squares> = _squares
-
-    init {
-        generateSquares()
-    }
-
-    /*fun init(squares: Squares?){
-        if(squares!=null){
-            _squares.value = squares!!
-        }
-    }
-    */
 
     fun generateSquares(){
         _squares.value = createSquare()
@@ -35,3 +26,11 @@ class MainViewModel(savedStateHandle:SavedStateHandle):ViewModel() {
     }
 
 }
+
+// Эта функция нужна для первой версиии восстановления состояния
+/*fun init(squares: Squares?){
+    if(squares!=null){
+        _squares.value = squares!!
+    }
+}
+*/
